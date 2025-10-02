@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RIALO Checker</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: url("{{ url_for('static', filename='rialo.png') }}") no-repeat center/cover;
+      font-family: 'Trebuchet MS', sans-serif;
+      color: white;
+    }
+    .box {
+      background: rgba(0,0,0,0.6);
+      padding: 40px;
+      border-radius: 20px;
+      text-align: center;
+    }
+    .logo {
+      width: 100px;
+      margin-bottom: 20px;
+    }
+    .btn {
+      padding: 15px 30px;
+      background: #1DA1F2;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background: #0d8ddb;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <img src="{{ url_for('static', filename='logo.jpg') }}" class="logo">
+    <h1><b>RIALO ULTIMATE CARD</b></h1>
+    <p>Rialo Card Edition</p>
+    <a href="/login"><button class="btn">Connect with X</button></a>
+  </div>
+</body>
+</html>

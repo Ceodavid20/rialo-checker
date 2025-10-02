@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RIALO Card</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      font-family: 'Trebuchet MS', sans-serif;
+      color: white;
+    }
+    .card {
+      background: rgba(0,0,0,0.75);
+      padding: 40px;
+      border-radius: 25px;
+      text-align: center;
+      width: 400px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+    }
+    .logo { width: 80px; margin-bottom: 15px; }
+    .profile { border-radius: 50%; width: 120px; border: 3px solid #fff; }
+    h1 { font-size: 32px; margin-bottom: 10px; }
+    .username { font-size: 20px; color: #1DA1F2; margin-bottom: 15px; }
+    .eligible { background: #00c851; padding: 12px; border-radius: 10px; font-weight: bold; }
+    .not-eligible { background: #ff4444; padding: 12px; border-radius: 10px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img src="{{ url_for('static', filename='logo.jpg') }}" class="logo">
+    <h1>RIALO</h1>
+    <img src="{{ user['profile_image_url'] }}" class="profile">
+    <div class="username">@{{ user['username'] }}</div>
+    {% if eligible %}
+      <div class="eligible">✅ Eligible — Welcome to RIALO ULTIMATE CARD </div>
+    {% else %}
+      <div class="not-eligible">❌ Not Eligible</div>
+    {% endif %}
+  </div>
+</body>
+</html>
