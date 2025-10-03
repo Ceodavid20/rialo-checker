@@ -14,7 +14,7 @@ load_dotenv()
 
 CLIENT_ID = os.getenv("X_CLIENT_ID")
 CLIENT_SECRET = os.getenv("X_CLIENT_SECRET")
-REDIRECT_URI = os.getenv("REDIRECT_URI", "http://127.0.0.1:5000/callback")
+REDIRECT_URI = os.getenv("REDIRECT_URI", "https://rialo-checker.onrender.com/callback")
 FLASK_SECRET_KEY = os.getenv("FLASK_SECRET_KEY", secrets.token_hex(32))
 
 SCOPES = "tweet.read users.read offline.access"
