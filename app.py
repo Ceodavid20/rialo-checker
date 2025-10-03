@@ -31,23 +31,25 @@ TWEETS_URL = "https://api.twitter.com/2/users/{}/tweets"
 # Init Flask
 app = Flask(__name__)
 app.secret_key = FLASK_SECRET_KEY
-
+app.config.update(
+    SESSION_COOKIE_SECURE=True,    # HTTPS only
+    SESSION_COOKIE_HTTPONLY=True,  # JS can’t read
+    SESSION_COOKIE_SAMESITE="Lax", # allow Twitter redirect
+    PERMANENT_SESSION_LIFETIME=300 # 5 minutes
+)
 
 # --- PKCE Helpers ---
 def generate_code_verifier():
     return base64.urlsafe_b64encode(secrets.token_bytes(64)).rstrip(b"=").decode()
 
-
 def code_challenge(verifier):
     digest = hashlib.sha256(verifier.encode()).digest()
     return base64.urlsafe_b64encode(digest).rstrip(b"=").decode()
-
 
 # --- Routes ---
 @app.route("/")
 def index():
     return render_template("index.html")
-
 
 @app.route("/login")
 def login():
@@ -70,7 +72,6 @@ def login():
     }
 
     return redirect(f"{AUTH_URL}?{urllib.parse.urlencode(params)}")
-
 
 @app.route("/callback")
 def callback():
@@ -145,7 +146,6 @@ def callback():
     found = any("rialo" in t.get("text", "").lower() for t in tweets_json.get("data", []))
 
     return render_template("fancy_card.html", user=user, eligible=found)
-
 
 # --- Run ---
 if __name__ == "__main__":
