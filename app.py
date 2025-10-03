@@ -14,7 +14,12 @@ load_dotenv()
 
 CLIENT_ID = os.getenv("X_CLIENT_ID")
 REDIRECT_URI = os.getenv("REDIRECT_URI", "https://rialo-checker.onrender.com/callback")
-FLASK_SECRET_KEY = os.getenv("FLASK_SECRET_KEY", secrets.token_hex(32))
+FLASK_SECRET_KEY = os.getenv("FLASK_SECRET_KEY")
+
+if not CLIENT_ID:
+    raise RuntimeError("Missing X_CLIENT_ID in environment variables")
+if not FLASK_SECRET_KEY:
+    raise RuntimeError("Missing FLASK_SECRET_KEY in environment variables")
 
 SCOPES = "tweet.read users.read offline.access"
 
@@ -72,8 +77,16 @@ def callback():
     code = request.args.get("code")
     state = request.args.get("state")
 
+    # Debug logging
+    print("Callback query params:", dict(request.args))
+    print("Expected state:", session.get("oauth_state"))
+
     if not code or state != session.get("oauth_state"):
-        return "Error: invalid state or missing code", 400
+        return (
+            f"Error: invalid state or missing code. "
+            f"Got state={state}, expected={session.get('oauth_state')}, code={code}",
+            400,
+        )
 
     # Exchange authorization code for access token
     payload = {
@@ -91,6 +104,8 @@ def callback():
     )
 
     tokens = resp.json()
+    print("Token response:", tokens)  # Debug log
+
     access_token = tokens.get("access_token")
     if not access_token:
         return f"Auth failed: {tokens}", 400
@@ -102,6 +117,8 @@ def callback():
         ME_URL + "?user.fields=profile_image_url,username", headers=headers
     )
     user_json = user_resp.json()
+    print("User response:", user_json)  # Debug log
+
     if "data" not in user_json:
         return f"Error fetching user info: {user_json}", 400
 
@@ -122,6 +139,7 @@ def callback():
         TWEETS_URL.format(user_id), headers=headers, params=params
     )
     tweets_json = tweets_resp.json()
+    print("Tweets response:", tweets_json)  # Debug log
 
     # Check if any tweet contains "rialo"
     found = any("rialo" in t.get("text", "").lower() for t in tweets_json.get("data", []))
